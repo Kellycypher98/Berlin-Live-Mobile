@@ -223,14 +223,17 @@ export const TransitMap = forwardRef<MapHandle, Props>(function TransitMap(p, re
 
         <GeoJSONSource id="stations" data={stationData} hitbox={{ top: 12, right: 12, bottom: 12, left: 12 }}
           onPress={e => { const pr = pressFeature(e); const s = pr && byIndex.get(pr.i as number); if (s) p.onSelectStation(s); }}>
-          <Layer id="stations" type="circle" filter={[">=", ["zoom"], ["get", "minz"]]}
-            paint={{
-              "circle-radius": ["case", ["==", ["get", "rail"], 1], ["interpolate", ["linear"], ["zoom"], 12, 3.5, 16, 6], 3],
-              "circle-color": th.dark ? "#18212b" : "#ffffff",
-              "circle-stroke-color": th.dark ? "#c6d0da" : "#3d4a57",
-              "circle-stroke-width": ["case", ["==", ["get", "rail"], 1], 2, 1.5],
-              "circle-opacity": p.dimmed ? 0.2 : 1, "circle-stroke-opacity": p.dimmed ? 0.2 : 1,
-            }} />
+          {/* One layer per zoom threshold: MapLibre native only allows ["zoom"] at the top of a property */}
+          {([["stations-rail", 12], ["stations-tram", 14], ["stations-bus", 15]] as const).map(([id, z]) => (
+            <Layer key={id} id={id} type="circle" minzoom={z} filter={["==", ["get", "minz"], z]}
+              paint={{
+                "circle-radius": z === 12 ? ["interpolate", ["linear"], ["zoom"], 12, 3.5, 16, 6] : 3,
+                "circle-color": th.dark ? "#18212b" : "#ffffff",
+                "circle-stroke-color": th.dark ? "#c6d0da" : "#3d4a57",
+                "circle-stroke-width": z === 12 ? 2 : 1.5,
+                "circle-opacity": p.dimmed ? 0.2 : 1, "circle-stroke-opacity": p.dimmed ? 0.2 : 1,
+              }} />
+          ))}
           <Layer id="station-names" type="symbol" minzoom={15} filter={["==", ["get", "rail"], 1]}
             layout={{ "text-field": ["get", "name"], "text-font": FONT, "text-size": 11, "text-offset": [0, 1.1], "text-anchor": "top", "text-optional": true }}
             paint={{ "text-color": th.dark ? "#c6d0da" : "#3d4a57", "text-halo-color": th.dark ? "#0f151b" : "#ffffff", "text-halo-width": 1.5, "text-opacity": p.dimmed ? 0.2 : 1 }} />
