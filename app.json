@@ -1,25 +1,69 @@
 {
   "expo": {
-    "name": "berlin-live-mobile",
-    "slug": "berlin-live-mobile",
+    "name": "Berlin Live",
+    "slug": "berlin-live",
+    "scheme": "berlinlive",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kellycypher.berlinlive",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Your location is used to show stations near you and to plan journeys from where you are.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "entitlements": {
+        "com.apple.developer.usernotifications.time-sensitive": true
+      }
     },
     "android": {
+      "package": "com.kellycypher.berlinlive",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#17212B",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
       "predictiveBackGestureEnabled": false
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-localization",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "backgroundColor": "#17212B"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Your location is used to show stations near you and to plan journeys from where you are."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#17212B"
+        }
+      ],
+      "@maplibre/maplibre-react-native",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "apiUrl": "https://YOUR-SERVER.sslip.io"
     }
   }
 }
